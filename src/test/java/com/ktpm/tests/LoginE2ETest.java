@@ -306,4 +306,33 @@ public class LoginE2ETest extends BaseTest {
             testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
         }
     }
+
+    @Test(priority = 11, description = "TC11: Kiểm thử nhập Mật khẩu chứa ký tự Tiếng Việt có dấu (UTF-8)")
+    public void testTC11_VietnameseUnicodePassword() {
+        String testId = "TC11";
+        String testName = "Kiểm thử nhập Mật khẩu chứa ký tự Tiếng Việt có dấu (UTF-8)";
+        String inputData = "username: 'huongnt', password: 'MậtKhẩuViệt2026!'";
+        String expected = "Hệ thống xử lý chuỗi UTF-8 an toàn, báo lỗi Tài khoản không đúng";
+        String actual = "";
+        String status = "FAIL";
+
+        try {
+            loginPage.enterUsername("huongnt");
+            Thread.sleep(500);
+            loginPage.enterPassword("MậtKhẩuViệt2026!");
+            Thread.sleep(500);
+            loginPage.clickLogin();
+            Thread.sleep(1200);
+
+            actual = loginPage.getErrorMessage();
+            Assert.assertTrue(actual.contains("không đúng") || actual.contains("Tài khoản"),
+                    "Hệ thống gặp lỗi khi nhận chuỗi mật khẩu có dấu tiếng Việt!");
+            status = "PASS";
+        } catch (Throwable t) {
+            actual = actual.isEmpty() ? ("Lỗi: " + t.getMessage()) : actual;
+            throw new RuntimeException(t);
+        } finally {
+            testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
+        }
+    }
 }
