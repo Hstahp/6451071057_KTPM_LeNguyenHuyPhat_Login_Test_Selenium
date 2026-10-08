@@ -422,4 +422,34 @@ public class LoginE2ETest extends BaseTest {
             testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
         }
     }
+
+    @Test(priority = 15, description = "TC15: Kiểm thử tấn công XSS ở ô Mật khẩu (Password)")
+    public void testTC15_XssInjectionPassword() {
+        String testId = "TC15";
+        String testName = "Kiểm thử tấn công XSS ở ô Mật khẩu (Password)";
+        String inputData = "username: 'huongnt', password: '<img src=x onerror=alert(\'XSS_PASS\')>'";
+        String expected = "Hệ thống không thực thi mã XSS ô mật khẩu, không bật alert";
+        String actual = "";
+        String status = "FAIL";
+
+        try {
+            loginPage.enterUsername("huongnt");
+            Thread.sleep(500);
+            loginPage.enterPassword("<img src=x onerror=alert('XSS_PASS')>");
+            Thread.sleep(500);
+            loginPage.clickLogin();
+            Thread.sleep(1200);
+
+            boolean hasAlert = loginPage.isAlertPresent();
+            Assert.assertFalse(hasAlert, "LỖI BẢO MẬT: Mã script XSS ô mật khẩu đã bị thực thi trên trình duyệt!");
+
+            actual = "Chặn XSS ô mật khẩu thành công: " + loginPage.getErrorMessage();
+            status = "PASS";
+        } catch (Throwable t) {
+            actual = actual.isEmpty() ? ("Lỗi: " + t.getMessage()) : actual;
+            throw new RuntimeException(t);
+        } finally {
+            testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
+        }
+    }
 }
