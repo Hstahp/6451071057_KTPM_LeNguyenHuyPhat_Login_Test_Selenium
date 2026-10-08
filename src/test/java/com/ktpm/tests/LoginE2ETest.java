@@ -217,4 +217,33 @@ public class LoginE2ETest extends BaseTest {
             testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
         }
     }
+
+    @Test(priority = 8, description = "TC8: Kiểm thử gửi form đăng nhập bằng phím ENTER từ ô Mật khẩu")
+    public void testTC8_SubmitFormWithEnterKey() {
+        String testId = "TC8";
+        String testName = "Kiểm thử gửi form đăng nhập bằng phím ENTER từ ô Mật khẩu";
+        String inputData = "username: 'huongnt', password: '123456' + Press ENTER";
+        String expected = "Form tự động submit và hiển thị phản hồi từ máy chủ";
+        String actual = "";
+        String status = "FAIL";
+
+        try {
+            loginPage.enterUsername("huongnt");
+            Thread.sleep(500);
+            loginPage.enterPassword("123456");
+            Thread.sleep(500);
+            loginPage.pressEnterOnPassword();
+            Thread.sleep(1200);
+
+            actual = loginPage.getErrorMessage();
+            Assert.assertTrue(actual.contains("không đúng") || actual.contains("Tài khoản"),
+                    "Phím ENTER không kích hoạt gửi form đăng nhập!");
+            status = "PASS";
+        } catch (Throwable t) {
+            actual = actual.isEmpty() ? ("Lỗi: " + t.getMessage()) : actual;
+            throw new RuntimeException(t);
+        } finally {
+            testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
+        }
+    }
 }
