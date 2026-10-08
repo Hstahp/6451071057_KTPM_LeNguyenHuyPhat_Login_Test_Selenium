@@ -275,4 +275,35 @@ public class LoginE2ETest extends BaseTest {
             testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
         }
     }
+
+    @Test(priority = 10, description = "TC10: Kiểm thử xóa (Clear) dữ liệu ô Username trước khi nhấn Đăng nhập")
+    public void testTC10_ClearUsernameBeforeSubmit() {
+        String testId = "TC10";
+        String testName = "Kiểm thử xóa (Clear) dữ liệu ô Username trước khi nhấn Đăng nhập";
+        String inputData = "username: '' (xóa sau khi nhập), password: '123456'";
+        String expected = "Bạn chưa nhập tên đăng nhập";
+        String actual = "";
+        String status = "FAIL";
+
+        try {
+            loginPage.enterUsername("tempuser");
+            Thread.sleep(400);
+            loginPage.clearUsername();
+            Thread.sleep(400);
+            loginPage.enterPassword("123456");
+            Thread.sleep(400);
+            loginPage.clickLogin();
+            Thread.sleep(1200);
+
+            actual = loginPage.getErrorMessage();
+            Assert.assertTrue(actual.contains("tên đăng nhập") || actual.contains("chưa nhập"),
+                    "Không hiển thị thông báo yêu cầu nhập tên đăng nhập sau khi xóa dữ liệu ô Username!");
+            status = "PASS";
+        } catch (Throwable t) {
+            actual = actual.isEmpty() ? ("Lỗi: " + t.getMessage()) : actual;
+            throw new RuntimeException(t);
+        } finally {
+            testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
+        }
+    }
 }
