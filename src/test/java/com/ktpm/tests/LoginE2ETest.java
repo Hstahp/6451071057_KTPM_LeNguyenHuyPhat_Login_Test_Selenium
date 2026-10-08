@@ -335,4 +335,33 @@ public class LoginE2ETest extends BaseTest {
             testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
         }
     }
+
+    @Test(priority = 12, description = "TC12: Kiểm thử nhập Tên đăng nhập là địa chỉ Email UTC hợp lệ")
+    public void testTC12_EmailUsernameFormat() {
+        String testId = "TC12";
+        String testName = "Kiểm thử nhập Tên đăng nhập là địa chỉ Email UTC hợp lệ";
+        String inputData = "username: 'sinhvien@st.utc.edu.vn', password: '123456'";
+        String expected = "Tài khoản không đúng";
+        String actual = "";
+        String status = "FAIL";
+
+        try {
+            loginPage.enterUsername("sinhvien@st.utc.edu.vn");
+            Thread.sleep(500);
+            loginPage.enterPassword("123456");
+            Thread.sleep(500);
+            loginPage.clickLogin();
+            Thread.sleep(1200);
+
+            actual = loginPage.getErrorMessage();
+            Assert.assertTrue(actual.contains("không đúng") || actual.contains("Tài khoản"),
+                    "Không hiển thị thông báo lỗi với tài khoản định dạng Email không tồn tại!");
+            status = "PASS";
+        } catch (Throwable t) {
+            actual = actual.isEmpty() ? ("Lỗi: " + t.getMessage()) : actual;
+            throw new RuntimeException(t);
+        } finally {
+            testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
+        }
+    }
 }
