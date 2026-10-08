@@ -1,0 +1,172 @@
+Dưới đây là toàn bộ 16 Test Case mới (đã được sửa đổi và cập nhật lại hoàn toàn mới) phục vụ kiểm thử trang Đăng nhập Văn phòng điện tử UTC:
+
+TC1: Nhập Tên đăng nhập là Mã sinh viên (dạng chữ số)
+•	STT: 1
+•	ID: TC1
+•	Description: Nhập tên đăng nhập là mã sinh viên (chỉ chứa các số) và mật khẩu ngẫu nhiên
+•	Steps:
+1. Mở trang vanphongdientu.utc.edu.vn/Login
+2. Nhập ô Username là "6451071057"
+3. Nhập ô Mật khẩu là "pass123"
+4. Click nút Đăng nhập
+•	Expected Output: Báo lỗi "Tài khoản không đúng" (hoặc Tài khoản hoặc mật khẩu không đúng.)
+
+TC2: Kiểm thử tấn công SQL Injection ở ô Mật khẩu (Password)
+•	STT: 2
+•	ID: TC2
+•	Description: Kiểm thử khả năng chống SQL Injection khi chèn mã độc vào ô Mật khẩu
+•	Steps:
+1. Mở trang vanphongdientu.utc.edu.vn/Login
+2. Nhập ô Username là "testuser"
+3. Nhập ô Mật khẩu là "' OR '1'='1"
+4. Click nút Đăng nhập
+•	Expected Output: Báo lỗi "Tài khoản không đúng" (chặn tấn công truy vấn cơ sở dữ liệu)
+
+TC3: Kiểm thử tấn công XSS dạng SVG Payload ở ô Tên đăng nhập
+•	STT: 3
+•	ID: TC3
+•	Description: Nhập đoạn mã XSS chứa thẻ SVG vào ô Username
+•	Steps:
+1. Mở trang vanphongdientu.utc.edu.vn/Login
+2. Nhập ô Username là "<svg onload=alert('XSS_UTC')>"
+3. Nhập ô Mật khẩu là "123456"
+4. Click nút Đăng nhập
+•	Expected Output: Hệ thống xử lý an toàn, không bật alert thông báo XSS trên trình duyệt
+
+TC4: Kiểm thử dán (Paste) dữ liệu vào ô Tên đăng nhập (Username)
+•	STT: 4
+•	ID: TC4
+•	Description: Kiểm thử tính năng dán chuỗi ký tự từ bộ nhớ tạm (Clipboard) vào ô Username
+•	Steps:
+1. Copy chuỗi "sv6451071057" từ bên ngoài
+2. Mở trang vanphongdientu.utc.edu.vn/Login
+3. Click vào ô Username
+4. Nhấn phím Ctrl + V để dán
+•	Expected Output: Chuỗi "sv6451071057" được dán thành công vào ô Username
+
+TC5: Kiểm thử liên kết "Bạn quên mật khẩu đăng nhập ?"
+•	STT: 5
+•	ID: TC5
+•	Description: Kiểm thử việc click chuyển hướng đến trang Quên mật khẩu
+•	Steps:
+1. Mở trang vanphongdientu.utc.edu.vn/Login
+2. Click vào liên kết "Bạn quên mật khẩu đăng nhập ?"
+•	Expected Output: Trình duyệt chuyển hướng đến trang cấp lại mật khẩu (/Login/GetPass)
+
+TC6: Kiểm thử nút "Đăng nhập bằng e-mail UTC"
+•	STT: 6
+•	ID: TC6
+•	Description: Kiểm thử nút liên kết Đăng nhập bằng Email đơn vị UTC
+•	Steps:
+1. Mở trang vanphongdientu.utc.edu.vn/Login
+2. Click vào nút "Đăng nhập bằng e-mail UTC"
+•	Expected Output: Trình duyệt gửi yêu cầu chuyển hướng tới cổng đăng nhập Email SSO của nhà trường
+
+TC7: Kiểm thử bật/tắt (Toggle) 2 lần ô tích chọn "Giữ tôi luôn đăng nhập"
+•	STT: 7
+•	ID: TC7
+•	Description: Kiểm thử thao tác chọn rồi bỏ chọn checkbox ghi nhớ đăng nhập
+•	Steps:
+1. Mở trang vanphongdientu.utc.edu.vn/Login
+2. Click lần 1 vào ô "Giữ tôi luôn đăng nhập"
+3. Click lần 2 vào ô "Giữ tôi luôn đăng nhập"
+•	Expected Output: Ô checkbox quay về trạng thái bỏ chọn (Unchecked)
+
+TC8: Kiểm thử gửi form đăng nhập bằng phím ENTER từ ô Mật khẩu
+•	STT: 8
+•	ID: TC8
+•	Description: Thực hiện đăng nhập bằng cách ấn phím ENTER thay vì click nút Đăng nhập
+•	Steps:
+1. Mở trang vanphongdientu.utc.edu.vn/Login
+2. Nhập Username "huongnt"
+3. Nhập Password "123456"
+4. Nhấn phím ENTER
+•	Expected Output: Form được tự động submit và hiển thị thông báo phản hồi từ máy chủ
+
+TC9: Kiểm thử nhập Mật khẩu chứa khoảng trắng ở giữa các ký tự
+•	STT: 9
+•	ID: TC9
+•	Description: Nhập mật khẩu có chứa khoảng trắng giữa các chữ số
+•	Steps:
+1. Mở trang vanphongdientu.utc.edu.vn/Login
+2. Nhập Username "huongnt"
+3. Nhập Password "123 456@utc"
+4. Click nút Đăng nhập
+•	Expected Output: Báo lỗi "Tài khoản không đúng" (hệ thống phân biệt ký tự khoảng trắng)
+
+TC10: Kiểm thử xóa (Clear) dữ liệu ô Username trước khi Đăng nhập
+•	STT: 10
+•	ID: TC10
+•	Description: Nhập dữ liệu sau đó xóa sạch ô Username và thực hiện Đăng nhập
+•	Steps:
+1. Mở trang vanphongdientu.utc.edu.vn/Login
+2. Nhập Username "tempuser"
+3. Xóa toàn bộ ký tự trong ô Username
+4. Nhập Password "123456"
+5. Click nút Đăng nhập
+•	Expected Output: Hiển thị thông báo "Bạn chưa nhập tên đăng nhập"
+
+TC11: Kiểm thử nhập Mật khẩu chứa ký tự Tiếng Việt có dấu (UTF-8)
+•	STT: 11
+•	ID: TC11
+•	Description: Nhập mật khẩu là chuỗi UTF-8 có dấu tiếng Việt
+•	Steps:
+1. Mở trang vanphongdientu.utc.edu.vn/Login
+2. Nhập Username "huongnt"
+3. Nhập Password "MậtKhẩuViệt2026!"
+4. Click nút Đăng nhập
+•	Expected Output: Máy chủ nhận dạng và xử lý chuỗi UTF-8 an toàn, báo lỗi "Tài khoản không đúng"
+
+TC12: Kiểm thử nhập Tên đăng nhập là địa chỉ Email UTC hợp lệ
+•	STT: 12
+•	ID: TC12
+•	Description: Nhập tên đăng nhập định dạng email sinh viên UTC
+•	Steps:
+1. Mở trang vanphongdientu.utc.edu.vn/Login
+2. Nhập Username "sinhvien@st.utc.edu.vn"
+3. Nhập Password "123456"
+4. Click nút Đăng nhập
+•	Expected Output: Báo lỗi "Tài khoản không đúng"
+
+TC13: Kiểm thử nhập Tên đăng nhập và Mật khẩu độ dài cực ngắn (1 ký tự)
+•	STT: 13
+•	ID: TC13
+•	Description: Nhập username 1 ký tự và password 1 ký tự
+•	Steps:
+1. Mở trang vanphongdientu.utc.edu.vn/Login
+2. Nhập Username "a"
+3. Nhập Password "1"
+4. Click nút Đăng nhập
+•	Expected Output: Báo lỗi "Tài khoản không đúng"
+
+TC14: Kiểm thử nhập Mật khẩu chứa tập hợp đầy đủ các ký tự đặc biệt phức tạp
+•	STT: 14
+•	ID: TC14
+•	Description: Nhập mật khẩu gồm nhiều ký tự đặc biệt phức tạp
+•	Steps:
+1. Mở trang vanphongdientu.utc.edu.vn/Login
+2. Nhập Username "huongnt"
+3. Nhập Password "!@#$%^&*()_+-=[]{}|;:',.<>?/"
+4. Click nút Đăng nhập
+•	Expected Output: Mã hóa và truyền nhận an toàn, báo lỗi "Tài khoản không đúng"
+
+TC15: Kiểm thử tấn công XSS ở ô Mật khẩu (Password)
+•	STT: 15
+•	ID: TC15
+•	Description: Chèn đoạn mã script XSS dạng thẻ img vào ô Password
+•	Steps:
+1. Mở trang vanphongdientu.utc.edu.vn/Login
+2. Nhập Username "huongnt"
+3. Nhập Password "<img src=x onerror=alert('XSS_PASS')>"
+4. Click nút Đăng nhập
+•	Expected Output: Hệ thống chặn thành công, không thực thi alert script
+
+TC16: Kiểm thử ẩn ký tự ô Mật khẩu (thuộc tính type="password")
+•	STT: 16
+•	ID: TC16
+•	Description: Kiểm thử ô mật khẩu có che ký tự dạng dấu chấm/sao
+•	Steps:
+1. Mở trang vanphongdientu.utc.edu.vn/Login
+2. Nhập Password "SecurePass2026#"
+3. Kiểm tra thuộc tính HTML type của thẻ input
+•	Expected Output: Ô mật khẩu có type='password' đảm bảo bảo mật thông tin
