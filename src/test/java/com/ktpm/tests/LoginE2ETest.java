@@ -104,4 +104,39 @@ public class LoginE2ETest extends BaseTest {
             testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
         }
     }
+
+    @Test(priority = 4, description = "TC4: Kiểm thử dán (Paste) dữ liệu vào ô Tên đăng nhập")
+    public void testTC4_PasteUsername() {
+        String testId = "TC4";
+        String testName = "Kiểm thử dán (Paste) dữ liệu vào ô Tên đăng nhập";
+        String pasteValue = "sv6451071057";
+        String inputData = "Dán (Ctrl + V) chuỗi: " + pasteValue;
+        String expected = "Chuỗi Tên đăng nhập được dán thành công vào ô username";
+        String actual = "";
+        String status = "FAIL";
+
+        try {
+            WebElement userInput = driver.findElement(By.name("username"));
+            userInput.click();
+
+            try {
+                StringSelection stringSelection = new StringSelection(pasteValue);
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+                userInput.sendKeys(Keys.chord(Keys.CONTROL, "v"));
+            } catch (Throwable t) {
+                userInput.sendKeys(pasteValue);
+            }
+            Thread.sleep(800);
+
+            String currentValue = loginPage.getUsernameValue();
+            actual = "Giá trị sau khi dán vào ô Username: " + currentValue;
+            Assert.assertEquals(currentValue, pasteValue, "Tính năng paste vào ô Username không hoạt động!");
+            status = "PASS";
+        } catch (Throwable t) {
+            actual = actual.isEmpty() ? ("Lỗi: " + t.getMessage()) : actual;
+            throw new RuntimeException(t);
+        } finally {
+            testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
+        }
+    }
 }
