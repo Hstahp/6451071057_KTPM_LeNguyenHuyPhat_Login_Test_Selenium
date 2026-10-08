@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="Login E2E Test Suite" verbose="1">
+    <test name="Login E2E Tests">
+        <classes>
+            <class name="com.ktpm.tests.LoginE2ETest" />
+        </classes>
+    </test>
+</suite>
