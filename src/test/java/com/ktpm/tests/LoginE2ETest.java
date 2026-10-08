@@ -74,4 +74,34 @@ public class LoginE2ETest extends BaseTest {
             testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
         }
     }
+
+    @Test(priority = 3, description = "TC3: Kiểm thử tấn công XSS dạng SVG Payload ở ô Tên đăng nhập")
+    public void testTC3_XssSvgUsername() {
+        String testId = "TC3";
+        String testName = "Kiểm thử tấn công XSS dạng SVG Payload ở ô Tên đăng nhập";
+        String inputData = "username: '<svg onload=alert(\'XSS_UTC\')>', password: '123456'";
+        String expected = "Hệ thống chặn script XSS thành công, không bật alert";
+        String actual = "";
+        String status = "FAIL";
+
+        try {
+            loginPage.enterUsername("<svg onload=alert('XSS_UTC')>");
+            Thread.sleep(500);
+            loginPage.enterPassword("123456");
+            Thread.sleep(500);
+            loginPage.clickLogin();
+            Thread.sleep(1200);
+
+            boolean hasAlert = loginPage.isAlertPresent();
+            Assert.assertFalse(hasAlert, "Mã script XSS dạng SVG đã bị kích hoạt trên trình duyệt!");
+
+            actual = "Hệ thống xử lý an toàn: " + loginPage.getErrorMessage();
+            status = "PASS";
+        } catch (Throwable t) {
+            actual = actual.isEmpty() ? ("Lỗi: " + t.getMessage()) : actual;
+            throw new RuntimeException(t);
+        } finally {
+            testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
+        }
+    }
 }
