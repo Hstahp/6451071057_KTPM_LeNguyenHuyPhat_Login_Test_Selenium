@@ -364,4 +364,33 @@ public class LoginE2ETest extends BaseTest {
             testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
         }
     }
+
+    @Test(priority = 13, description = "TC13: Kiểm thử nhập Tên đăng nhập và Mật khẩu có độ dài cực ngắn (1 ký tự)")
+    public void testTC13_SingleCharacterInput() {
+        String testId = "TC13";
+        String testName = "Kiểm thử nhập Tên đăng nhập và Mật khẩu có độ dài cực ngắn (1 ký tự)";
+        String inputData = "username: 'a', password: '1'";
+        String expected = "Tài khoản không đúng";
+        String actual = "";
+        String status = "FAIL";
+
+        try {
+            loginPage.enterUsername("a");
+            Thread.sleep(500);
+            loginPage.enterPassword("1");
+            Thread.sleep(500);
+            loginPage.clickLogin();
+            Thread.sleep(1200);
+
+            actual = loginPage.getErrorMessage();
+            Assert.assertTrue(actual.contains("không đúng") || actual.contains("Tài khoản"),
+                    "Không hiển thị thông báo lỗi khi nhập dữ liệu cực ngắn!");
+            status = "PASS";
+        } catch (Throwable t) {
+            actual = actual.isEmpty() ? ("Lỗi: " + t.getMessage()) : actual;
+            throw new RuntimeException(t);
+        } finally {
+            testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
+        }
+    }
 }
