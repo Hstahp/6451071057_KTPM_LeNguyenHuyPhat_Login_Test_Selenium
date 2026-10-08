@@ -190,4 +190,31 @@ public class LoginE2ETest extends BaseTest {
             testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
         }
     }
+
+    @Test(priority = 7, description = "TC7: Kiểm thử bật/tắt (Toggle) 2 lần ô tích chọn 'Giữ tôi luôn đăng nhập'")
+    public void testTC7_ToggleRememberMeTwice() {
+        String testId = "TC7";
+        String testName = "Kiểm thử bật/tắt (Toggle) 2 lần ô tích chọn 'Giữ tôi luôn đăng nhập'";
+        String inputData = "Click 2 lần vào checkbox 'Giữ tôi luôn đăng nhập'";
+        String expected = "Trạng thái ô tích chọn trở về không chọn (false)";
+        String actual = "";
+        String status = "FAIL";
+
+        try {
+            loginPage.toggleRememberMe();
+            Thread.sleep(400);
+            loginPage.toggleRememberMe();
+            Thread.sleep(400);
+
+            boolean isChecked = loginPage.isRememberMeChecked();
+            actual = "Trạng thái checkbox sau 2 lần click: isChecked = " + isChecked;
+            Assert.assertFalse(isChecked, "Checkbox vẫn bị chọn sau khi toggle 2 lần!");
+            status = "PASS";
+        } catch (Throwable t) {
+            actual = actual.isEmpty() ? ("Lỗi: " + t.getMessage()) : actual;
+            throw new RuntimeException(t);
+        } finally {
+            testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
+        }
+    }
 }
