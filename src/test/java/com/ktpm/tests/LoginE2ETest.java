@@ -246,4 +246,33 @@ public class LoginE2ETest extends BaseTest {
             testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
         }
     }
+
+    @Test(priority = 9, description = "TC9: Kiểm thử nhập Mật khẩu chứa khoảng trắng ở giữa")
+    public void testTC9_PasswordWithSpacesInside() {
+        String testId = "TC9";
+        String testName = "Kiểm thử nhập Mật khẩu chứa khoảng trắng ở giữa";
+        String inputData = "username: 'huongnt', password: '123 456@utc'";
+        String expected = "Tài khoản không đúng (phân biệt ký tự khoảng trắng trong mật khẩu)";
+        String actual = "";
+        String status = "FAIL";
+
+        try {
+            loginPage.enterUsername("huongnt");
+            Thread.sleep(500);
+            loginPage.enterPassword("123 456@utc");
+            Thread.sleep(500);
+            loginPage.clickLogin();
+            Thread.sleep(1200);
+
+            actual = loginPage.getErrorMessage();
+            Assert.assertTrue(actual.contains("không đúng") || actual.contains("Tài khoản"),
+                    "Hệ thống không phát hiện mật khẩu sai khi có khoảng trắng ở giữa!");
+            status = "PASS";
+        } catch (Throwable t) {
+            actual = actual.isEmpty() ? ("Lỗi: " + t.getMessage()) : actual;
+            throw new RuntimeException(t);
+        } finally {
+            testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
+        }
+    }
 }
