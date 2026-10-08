@@ -452,4 +452,29 @@ public class LoginE2ETest extends BaseTest {
             testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
         }
     }
+
+    @Test(priority = 16, description = "TC16: Kiểm thử ẩn ký tự ô Mật khẩu (thuộc tính type='password')")
+    public void testTC16_PasswordMaskingAttribute() {
+        String testId = "TC16";
+        String testName = "Kiểm thử ẩn ký tự ô Mật khẩu (thuộc tính type='password')";
+        String inputData = "password: 'SecurePass2026#'";
+        String expected = "Ô mật khẩu có thuộc tính type='password' để ẩn ký tự dạng dấu chấm/sao";
+        String actual = "";
+        String status = "FAIL";
+
+        try {
+            loginPage.enterPassword("SecurePass2026#");
+            Thread.sleep(500);
+
+            String inputType = loginPage.getPasswordInputType();
+            actual = "Thuộc tính type của ô mật khẩu: " + inputType;
+            Assert.assertEquals(inputType, "password", "Ô mật khẩu không được ẩn ký tự (type không phải 'password')!");
+            status = "PASS";
+        } catch (Throwable t) {
+            actual = actual.isEmpty() ? ("Lỗi: " + t.getMessage()) : actual;
+            throw new RuntimeException(t);
+        } finally {
+            testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
+        }
+    }
 }
