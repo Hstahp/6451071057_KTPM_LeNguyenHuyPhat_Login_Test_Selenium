@@ -45,4 +45,33 @@ public class LoginE2ETest extends BaseTest {
             testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
         }
     }
+
+    @Test(priority = 2, description = "TC2: Kiểm thử tấn công SQL Injection ở ô Mật khẩu")
+    public void testTC2_SqlInjectionPassword() {
+        String testId = "TC2";
+        String testName = "Kiểm thử tấn công SQL Injection ở ô Mật khẩu";
+        String inputData = "username: 'testuser', password: '\' OR \'1\'=\'1'";
+        String expected = "Tài khoản không đúng (chặn tấn công SQLi mật khẩu)";
+        String actual = "";
+        String status = "FAIL";
+
+        try {
+            loginPage.enterUsername("testuser");
+            Thread.sleep(500);
+            loginPage.enterPassword("' OR '1'='1");
+            Thread.sleep(500);
+            loginPage.clickLogin();
+            Thread.sleep(1200);
+
+            actual = loginPage.getErrorMessage();
+            Assert.assertTrue(actual.contains("không đúng") || actual.contains("Tài khoản"),
+                    "Hệ thống không chặn được SQL Injection ở ô mật khẩu!");
+            status = "PASS";
+        } catch (Throwable t) {
+            actual = actual.isEmpty() ? ("Lỗi: " + t.getMessage()) : actual;
+            throw new RuntimeException(t);
+        } finally {
+            testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
+        }
+    }
 }
