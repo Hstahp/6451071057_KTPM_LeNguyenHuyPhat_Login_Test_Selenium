@@ -139,4 +139,30 @@ public class LoginE2ETest extends BaseTest {
             testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
         }
     }
+
+    @Test(priority = 5, description = "TC5: Kiểm thử liên kết 'Bạn quên mật khẩu đăng nhập ?'")
+    public void testTC5_ForgotPasswordLink() {
+        String testId = "TC5";
+        String testName = "Kiểm thử liên kết 'Bạn quên mật khẩu đăng nhập ?'";
+        String inputData = "Click link: 'Bạn quên mật khẩu đăng nhập ?'";
+        String expected = "Trình duyệt chuyển hướng tới trang Quên mật khẩu (/Login/GetPass)";
+        String actual = "";
+        String status = "FAIL";
+
+        try {
+            loginPage.clickForgotPassword();
+            Thread.sleep(1200);
+
+            String currentUrl = loginPage.getCurrentUrl();
+            actual = "Đã chuyển hướng thành công tới URL: " + currentUrl;
+            Assert.assertTrue(currentUrl.toLowerCase().contains("getpass") || driver.getTitle().contains("quên") || driver.getTitle().contains("Quên"),
+                    "Liên kết Quên mật khẩu không chuyển hướng đúng trang!");
+            status = "PASS";
+        } catch (Throwable t) {
+            actual = actual.isEmpty() ? ("Lỗi: " + t.getMessage()) : actual;
+            throw new RuntimeException(t);
+        } finally {
+            testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
+        }
+    }
 }
