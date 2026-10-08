@@ -393,4 +393,33 @@ public class LoginE2ETest extends BaseTest {
             testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
         }
     }
+
+    @Test(priority = 14, description = "TC14: Kiểm thử nhập Mật khẩu chứa tập hợp đầy đủ các ký tự đặc biệt phức tạp")
+    public void testTC14_ComplexSpecialCharsPassword() {
+        String testId = "TC14";
+        String testName = "Kiểm thử nhập Mật khẩu chứa tập hợp đầy đủ các ký tự đặc biệt phức tạp";
+        String inputData = "username: 'huongnt', password: '!@#$%^&*()_+-=[]{}|;:\',.<>?/'";
+        String expected = "Xử lý ký tự đặc biệt an toàn, báo lỗi Tài khoản không đúng";
+        String actual = "";
+        String status = "FAIL";
+
+        try {
+            loginPage.enterUsername("huongnt");
+            Thread.sleep(500);
+            loginPage.enterPassword("!@#$%^&*()_+-=[]{}|;:',.<>?/");
+            Thread.sleep(500);
+            loginPage.clickLogin();
+            Thread.sleep(1200);
+
+            actual = loginPage.getErrorMessage();
+            Assert.assertTrue(actual.contains("không đúng") || actual.contains("Tài khoản"),
+                    "Hệ thống không xử lý an toàn chuỗi ký tự đặc biệt phức tạp!");
+            status = "PASS";
+        } catch (Throwable t) {
+            actual = actual.isEmpty() ? ("Lỗi: " + t.getMessage()) : actual;
+            throw new RuntimeException(t);
+        } finally {
+            testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
+        }
+    }
 }
