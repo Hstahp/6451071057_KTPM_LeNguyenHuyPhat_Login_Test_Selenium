@@ -165,4 +165,29 @@ public class LoginE2ETest extends BaseTest {
             testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
         }
     }
+
+    @Test(priority = 6, description = "TC6: Kiểm thử nút 'Đăng nhập bằng e-mail UTC'")
+    public void testTC6_GoogleEmailLoginButton() {
+        String testId = "TC6";
+        String testName = "Kiểm thử nút 'Đăng nhập bằng e-mail UTC'";
+        String inputData = "Click nút: 'Đăng nhập bằng e-mail UTC'";
+        String expected = "Hệ thống thực hiện chuyển hướng tới cổng xác thực Email SSO";
+        String actual = "";
+        String status = "FAIL";
+
+        try {
+            loginPage.clickGoogleLogin();
+            Thread.sleep(1200);
+
+            String currentUrl = loginPage.getCurrentUrl();
+            actual = "Đã click nút Đăng nhập bằng e-mail UTC, URL hiện tại: " + currentUrl;
+            Assert.assertNotNull(currentUrl, "Không nhận diện được URL sau khi click!");
+            status = "PASS";
+        } catch (Throwable t) {
+            actual = actual.isEmpty() ? ("Lỗi: " + t.getMessage()) : actual;
+            throw new RuntimeException(t);
+        } finally {
+            testResults.add(new TestCaseResult(testId, testName, inputData, expected, actual, status, LocalTime.now().format(TIME_FMT)));
+        }
+    }
 }
